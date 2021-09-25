@@ -1,0 +1,47 @@
+<!--pages/lottery/lottery.wxml-->
+<view class="page" data-weui-theme="{{theme}}">
+  <view class="page__hd">
+      <view class="page__title">说明</view>
+      <view class="page__desc">ID可以是AV号、BV号、CV号、动态ID中的任意一种
+URL可以是视频稿件、专栏稿件、动态的网页链接或分享链接中的任意一种</view>
+  </view>
+  <view class="page__bd">
+    <view class="weui-cells__title">设置目标稿件/动态</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__bd">
+                <input id="id" name="id" class="weui-input" placeholder-class="weui-input__placeholder" placeholder="ID或URL" bindinput='getInputValue'/>
+            </view>
+        </view>
+    </view>
+    <view class="weui-cell__bd">
+      <a class="weui-btn weui-btn_primary" style="margin-top: 40%;" bindtap="entranceLottery">进入抽奖</a>
+    </view>
+  </view>
+
+  <!-- 弹框 -->
+  <view class="fadeIn" wx:if="{{iosDialogSearchThingInvalid}}">
+    <view class="weui-mask"></view>
+    <view class="weui-dialog">
+        <view class="weui-dialog__bd">输入的ID或URL无效</view>
+        <view class="weui-dialog__ft">
+            <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">知道了</a>
+        </view>
+    </view>
+  </view>
+
+  <view class="fadeIn" wx:if="{{androidDialogSearchThingInvalid}}">
+    <view class="weui-mask"></view>
+    <view class="weui-dialog weui-skin_android">
+        <!-- <view class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></view> -->
+        <view class="weui-dialog__bd">
+            输入的ID或URL无效
+        </view>
+        <view class="weui-dialog__ft">
+            <!-- <a class="weui-dialog__btn weui-dialog__btn_default" bindtap="close">辅助操作</a> -->
+            <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">知道了</a>
+        </view>
+    </view>
+  </view>
+</view>
+

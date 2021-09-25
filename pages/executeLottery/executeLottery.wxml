@@ -1,0 +1,297 @@
+<!--pages/executeLottery/executeLottery.wxml-->
+<view class="page" data-weui-theme="{{theme}}">
+  <view class="page__hd">
+    <!-- <view class="weui"> -->
+    <view wx:if="{{pageData.type.code == 0}}">
+        <image src="{{pageData.bearer.pic}}"></image>
+    </view>
+    <view wx:if="{{pageData.type.code == 0}}">{{pageData.bearer.desc}}</view>
+  </view>
+  <view class="page__bd">
+    <view class="weui-cells__title">目标信息</view>
+    <view class="weui-cells weui-cells_after-title">
+        <!--视频-->
+        <view class="weui-cell" wx:if="{{pageData.type.code != 2}}">
+            <view class="weui-cell__bd">{{pageData.bearer.title}}</view>
+            <view class="weui-cell__ft">稿件标题</view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{pageData.bearer.id}}</view>
+            <view class="weui-cell__ft">作品ID</view>
+        </view>
+        <navigator url="{{pageData.bearer.url}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+            <view class="weui-cell__bd" wx:if="{{pageData.type.code == 0}}">视频稿件</view>
+            <view class="weui-cell__bd" wx:if="{{pageData.type.code == 1}}">专栏</view>
+            <view class="weui-cell__bd" wx:if="{{pageData.type.code == 2}}">动态</view>
+            <view class="weui-cell__ft weui-cell__ft_in-access">跳转到作品</view>
+        </navigator>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{pageData.bearer.uid}}</view>
+            <view class="weui-cell__ft">作者用户ID</view>
+        </view>
+
+        <navigator url="{{pageData.bearer.userHomeUrl}}" class="weui-cell weui-cell_example weui-cell_access" hover-class="weui-cell_active">
+            <view class="weui-cell__hd" wx:if="{{pageData.type.code == 0}}">
+              <image src="{{pageData.bearer.faceUrl}}" mode="widthFix"  style="width: 60px; height: 60px; right: 40%;"></image>
+            </view>
+            <view class="weui-cell__bd">{{pageData.bearer.uname}}</view>
+            <view class="weui-cell__ft weui-cell__ft_in-access">作者主页</view>
+        </navigator>
+
+        <view class="weui-cell" wx:if="{{pageData.type.code != 2}}">
+            <view class="weui-cell__bd">{{pageData.bearer.viewCount}}</view>
+            <view class="weui-cell__ft">查看量</view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{pageData.bearer.likeCount}}</view>
+            <view class="weui-cell__ft">点赞数</view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{pageData.bearer.shareCount}}</view>
+            <view class="weui-cell__ft">分享数</view>
+        </view>
+        <view class="weui-cell" wx:if="{{pageData.type.code != 2}}">
+            <view class="weui-cell__bd">{{pageData.bearer.collectCount}}</view>
+            <view class="weui-cell__ft">收藏数</view>
+        </view>
+        <view class="weui-cell" wx:if="{{pageData.type.code != 2}}">
+            <view class="weui-cell__bd">{{pageData.bearer.coinCount}}</view>
+            <view class="weui-cell__ft">投币数</view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__bd">{{pageData.bearer.commentCount}}</view>
+            <view class="weui-cell__ft">总评论数</view>
+        </view>
+        <view class="weui-cell" wx:if="{{pageData.type.code != 1}}">
+            <view class="weui-cell__bd">{{pageData.bearer.pubTime}}</view>
+            <view class="weui-cell__ft">发布时间</view>
+        </view>
+    </view>
+    <form bindsubmit='executeLottery'>
+      <view class="weui-cells__title">筛选评论条件</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">设定中奖数</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input name="lotteryCount" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="不超过50"/>
+            </view>
+        </view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">奖品备注</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input name="prizeNotes" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="填写奖品..."/>
+            </view>
+        </view>
+        <!-- 先故意隐藏，默认情况下不允许 -->
+        <view wx:if="{{1 > 2}}" class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">允许重复UID</view>
+            <view class="weui-cell__ft">
+                <switch name="duplicatedUid" />
+            </view>
+        </view>
+
+        <!-- 选择框，选择筛选类型 -->
+        <view class="weui-cell weui-cell_active weui-cell_select weui-cell_select-after">
+            <view class="weui-cell__hd">
+                <label class="weui-label" style="width: 6em">抽奖范围</label>
+            </view>
+            <view class="weui-cell__bd">
+                <picker aria-role="combobox" bindchange="bindLotteryTypeChange" range="{{lotteryTypeArray}}">
+                    <view name="lotteryType" class="weui-select">{{lotteryTypeArray[lotteryTypeValue]}}</view>
+                </picker>
+            </view>
+        </view>
+
+
+
+        <view class="weui-cells__title">设置关键词</view>
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">仅筛选包含特定关键词的评论</view>
+            <view class="weui-cell__ft">
+                <switch name="onlyContainsKeywords" />
+            </view>
+        </view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">关键词</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input name="keywords" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="输入关键词..."/>
+            </view>
+        </view>
+
+
+        <view class="weui-cells__title">设置开始时间</view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">开始日期</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="date" value="{{startDate}}" start="1970-09-01" end="2100-09-01" bindchange="bindStartDateChange">
+                    <view name="startData" class="weui-input">{{startDate}}</view>
+                </picker>
+            </view>
+        </view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">开始时刻</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="time" value="{{startTime}}" start="00:00" end="23:59" bindchange="bindStartTimeChange">
+                    <view name="startTimeEntity" class="weui-input">{{startTime}}</view>
+                </picker>
+            </view>
+        </view>
+
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">不限开始时间</view>
+            <view class="weui-cell__ft">
+                <switch name="unlimitedStartTime" checked />
+            </view>
+        </view>
+        <view hidden="true" class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">包含开始时间点</view>
+            <view class="weui-cell__ft">
+                <switch name="containsStartTime" checked />
+            </view>
+        </view>
+
+        <view class="weui-cells__title">设置结束时间</view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">结束日期</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="date" value="{{endDate}}" start="1970-09-01" end="2100-09-01" bindchange="bindEndDateChange">
+                    <view name="endDate" class="weui-input">{{endDate}}</view>
+                </picker>
+            </view>
+        </view>
+        <view class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">结束时刻</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="bindEndTimeChange">
+                    <view name="endTime" class="weui-input">{{endTime}}</view>
+                </picker>
+            </view>
+        </view>
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">不限截止时间</view>
+            <view class="weui-cell__ft">
+                <switch name="unlimitedEndTime" checked />
+            </view>
+        </view>
+        <view hidden="true" class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">包含截止时间点</view>
+            <view class="weui-cell__ft">
+                <switch name="containsEndTime" checked />
+            </view>
+        </view>
+      </view>
+
+      <view class="weui-cells__title">设置定时开奖</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">是否设置定时开奖</view>
+            <view class="weui-cell__ft">
+                <switch name="timeLottery"  bindchange="timeLotterySwitchChange" />
+            </view>
+        </view>
+        <view hidden="{{hiddenTimeLottery}}" class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">开奖日期</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="date" value="{{lotteryDate}}" start="1970-09-01" end="2100-09-01" bindchange="bindLotteryDateChange">
+                    <view name="lotteryDate" class="weui-input">{{lotteryDate}}</view>
+                </picker>
+            </view>
+        </view>
+        <view hidden="{{hiddenTimeLottery}}" class="weui-cell weui-cell_active">
+            <view class="weui-cell__hd">
+                <view class="weui-label">开奖时刻</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="time" value="{{lotteryTime}}" start="00:00" end="23:59" bindchange="bindLotteryTimeChange">
+                    <view name="lotteryTime" class="weui-input">{{lotteryTime}}</view>
+                </picker>
+            </view>
+        </view>
+      </view>
+
+      <!-- 弹框 -->
+      <view class="fadeIn" wx:if="{{iosDialogPostTimeLotterySuccessfully}}">
+        <view class="weui-mask"></view>
+        <view class="weui-dialog">
+            <view class="weui-dialog__bd">成功发起定时抽奖</view>
+            <view class="weui-dialog__ft">
+                <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">知道了</a>
+            </view>
+        </view>
+      </view>
+
+      <view class="fadeIn" wx:if="{{androidDialogPostTimeLotterySuccessfully}}">
+        <view class="weui-mask"></view>
+        <view class="weui-dialog weui-skin_android">
+            <!-- <view class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></view> -->
+            <view class="weui-dialog__bd">
+                成功发起定时抽奖
+            </view>
+            <view class="weui-dialog__ft">
+                <!-- <a class="weui-dialog__btn weui-dialog__btn_default" bindtap="close">辅助操作</a> -->
+                <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">知道了</a>
+            </view>
+        </view>
+      </view>
+    
+      <view class="weui-cells__tips">* 评论区中的楼中楼不会参与抽奖</view>
+      <view class="weui-cells__tips">* 重复评论无效，系统会自动删除重复评论</view>
+      <view class="weui-cells__tips">* 支持者模式❤️：需评论+关注，且关注时间越久，中奖概率越大</view>
+      <view class="weui-cell__bd">
+        <button formType="submit" class="weui-btn weui-btn_primary" style="margin-top: 40%;">发起抽奖</button>
+      </view>
+    </form>
+  </view>
+
+  <!-- 弹框 -->
+  <view class="fadeIn" wx:if="{{iosDialogExecuteLotteryMsg}}">
+    <view class="weui-mask"></view>
+    <view class="weui-dialog">
+        <view class="weui-dialog__bd">{{executeLotteryMsg}}</view>
+        <view class="weui-dialog__ft">
+            <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="closeSearchThingInvalid">知道了</a>
+        </view>
+    </view>
+  </view>
+
+  <view class="fadeIn" wx:if="{{androidDialogExecuteLotteryMsg}}">
+    <view class="weui-mask"></view>
+    <view class="weui-dialog weui-skin_android">
+        <!-- <view class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></view> -->
+        <view class="weui-dialog__bd">
+            {{executeLotteryMsg}}
+        </view>
+        <view class="weui-dialog__ft">
+            <!-- <a class="weui-dialog__btn weui-dialog__btn_default" bindtap="close">辅助操作</a> -->
+            <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="closeSearchThingInvalid">知道了</a>
+        </view>
+    </view>
+  </view>
+
+  <!-- toast显示失败原因 -->
+  <view aria-role="alert" class="fadeIn {{hideWarnToast ? 'fadeOut' : ''}}" wx:if="{{warnToast}}">
+    <view class="weui-mask_transparent"></view>
+    <view class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+        <view class="weui-toast__content">{{warnMsg}}</view>
+    </view>
+  </view>
+</view>
+
+

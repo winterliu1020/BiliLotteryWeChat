@@ -1,0 +1,143 @@
+<wxs src="./lotteryResult.wxs" module="lotteryResult"/>
+<view class="page" data-weui-theme="{{theme}}">
+  <view class="page__hd">
+    <!-- <view class="weui"> -->
+    <view wx:if="{{pageData.postLottery.timeLottery}}">
+      <!-- 定时抽奖显示倒计时 -->
+      <view class="weui-flex">
+        <view class="weui-flex__item"><view class="placeholder">{{time.day}} 天</view></view>
+        <view class="weui-flex__item"><view class="placeholder">{{time.hour}} 时</view></view>
+        <view class="weui-flex__item"><view class="placeholder">{{time.minute}} 分</view></view>
+        <view class="weui-flex__item"><view class="placeholder">{{time.second}} 秒</view></view>
+      </view>
+    </view>
+    <view wx:else>
+    <!-- 非定时抽奖显示一张图片 -->
+      <image src="https://picsum.photos/200"></image>
+    </view>
+    <!-- 发起该次抽奖到设置信息 -->
+  </view>
+  <view class="page__bd">
+    <view class="weui-form-preview">
+			<view class="weui-form-preview__hd" aria-role="option">
+				<view class="weui-form-preview__item">
+					<label class="weui-form-preview__label">奖品</label>
+					<em class="weui-form-preview__value" wx:if="{{!!pageData.postLottery.prizeNotes}}">{{pageData.postLottery.prizeNotes}}</em>
+				</view>
+			</view>
+			<view aria-labelledby="p1 js_a11y_comma p2 js_a11y_comma p3" class="weui-form-preview__bd" aria-role="option">
+				<view id="p1" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">评论开始时间</label>
+          <view wx:if="{{pageData.postLottery.unlimitedStart}}">
+            <text class="weui-form-preview__value">不限</text>
+          </view>
+          <view wx:else>
+            <text class="weui-form-preview__value">{{lotteryResult.js_date_time(pageData.postLottery.start)}}</text>
+          </view>
+        </view>
+        <view id="p2" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">评论结束时间</label>
+          <view wx:if="{{pageData.postLottery.unlimitedStart}}">
+            <text class="weui-form-preview__value">不限</text>
+          </view>
+          <view wx:else>
+            <text class="weui-form-preview__value">{{lotteryResult.js_date_time(pageData.postLottery.end)}}</text>
+          </view>
+        </view>
+        <view id="p3" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">允许重复Uid</label>
+          <view wx:if="{{pageData.postLottery.duplicatedUid}}">
+            <text class="weui-form-preview__value">允许</text>
+          </view>
+          <view wx:else>
+            <text class="weui-form-preview__value">不允许</text>
+          </view>
+        </view>
+        <view id="p4" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">关键词</label>
+          <view wx:if="{{pageData.postLottery.onlySpecified}}">
+            <text class="weui-form-preview__value">{{pageData.postLottery.contentSpecified}}</text>
+          </view>
+          <view wx:else>
+            <text class="weui-form-preview__value">不设置关键词</text>
+          </view>
+        </view>
+        <view id="p5" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">开奖时间</label>
+          <view>
+            <text class="weui-form-preview__value">{{lotteryResult.js_date_time(pageData.postLottery.lotteryDateAndTime)}}</text>
+          </view>
+        </view>
+        <view id="p6" class="weui-form-preview__item">
+          <label class="weui-form-preview__label">抽奖结果</label>
+          <view>
+            <text class="weui-form-preview__value">{{pageData.postLottery.out}}</text>
+          </view>
+				</view>
+			</view>
+		</view>
+    <view class="weui-panel__hd">中奖名单</view>
+    <view class="weui-panel__bd">
+      <view wx:if="{{pageData.lotteryResult.length == 0}}">
+        <view class="weui-loadmore weui-loadmore_line">
+          <text class="weui-loadmore__tips">{{msg}}</text>
+        </view>
+      </view>
+      <block wx:for="{{pageData.lotteryResult}}" wx:key="*this">
+        <a class="weui-media-box weui-media-box_appmsg">
+          <view class="weui-media-box__hd">
+            <image class="weui-media-box__thumb" src="{{item.faceUrl}}" alt></image>
+          </view>
+          <view class="weui-media-box__bd">
+            <h4 class="weui-media-box__title">{{item.uname}}</h4>
+            <view class="weui-media-box__desc">{{item.content}}</view>
+            <view class="weui-media-box__info">
+              <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+              <view class="weui-media-box__info__meta">{{item.pubTime}}</view>
+              <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">uid: {{item.uid}}</view>
+            </view>
+          </view>
+        </a>
+      </block>
+    </view>
+    <!-- <view class="weui-panel__ft" wx:if="{{pageData.postLottery.count  > 100}}">
+      <a class="weui-cell weui-cell_active weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">查看更多 {{pageData.postLottery.count}}</view>
+        <text class="weui-cell__ft"></text>
+      </a>
+    </view> -->
+
+    <view class="fadeIn" wx:if="{{iosDialog2}}">
+      <view class="weui-mask"></view>
+      <view class="weui-dialog">
+          <view class="weui-dialog__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</view>
+          <view class="weui-dialog__ft">
+              <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">知道了</a>
+          </view>
+      </view>
+    </view>
+
+    <view class="fadeIn" wx:if="{{androidDialog1}}">
+      <view class="weui-mask"></view>
+      <view class="weui-dialog weui-skin_android">
+          <view class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></view>
+          <view class="weui-dialog__bd">
+              弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内
+          </view>
+          <view class="weui-dialog__ft">
+              <a class="weui-dialog__btn weui-dialog__btn_default" bindtap="close">辅助操作</a>
+              <a class="weui-dialog__btn weui-dialog__btn_primary" bindtap="close">主操作</a>
+          </view>
+      </view>
+    </view>
+
+    <!-- toast显示失败原因 -->
+    <view aria-role="alert" class="fadeIn {{hideWarnToast ? 'fadeOut' : ''}}" wx:if="{{warnToast}}">
+      <view class="weui-mask_transparent"></view>
+      <view class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+        <view class="weui-toast__content">{{warnMsg}}</view>
+      </view>
+    </view>
+  </view>
+</view>

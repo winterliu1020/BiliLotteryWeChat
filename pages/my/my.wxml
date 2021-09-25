@@ -1,0 +1,177 @@
+<!--pages/my/my.wxml-->
+<wxs src="./my.wxs" module="my"/>
+
+<view class="page" data-weui-theme="{{theme}}">
+  <view class="page__hd">
+    <!-- <view class="weui"> -->
+    <view class="container">
+      <view class="userinfo">
+        <block wx:if="{{!haveUserInfo}}">
+          <!-- <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称1 </button> -->
+          <!-- <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button> -->
+          <button wx:if="{{!haveUserInfo}}" class="weui-btn weui-btn_primary" bindtap="syncUserInfo">同步账号昵称数据</button>
+        </block>
+        <block wx:else>
+          <view class='headView'>
+            <open-data class='icon' mode="aspectFit" type="userAvatarUrl"></open-data>
+            <!-- <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image> -->
+            <view class='icon'></view>
+          </view>
+          <text class=" nickName userinfo-nickname">{{userInfo.nickName}}</text>
+        </block>
+        <button wx:if="{{!haveSession}}" class="weui-btn weui-btn_primary" bindtap="login">登录</button>
+      </view>
+    </view>
+
+    
+  </view>
+  <view class="page__bd">
+    <view class="weui-panel__hd">待开奖</view>
+    <view class="weui-panel__bd">
+      <view wx:if="{{lotteryNotDrawYet.length == 0}}">
+        <view class="weui-loadmore weui-loadmore_line">
+          <text class="weui-loadmore__tips">暂无数据</text>
+        </view>
+      </view>
+      <block wx:for="{{lotteryNotDrawYet}}" wx:key="*this">
+        <view id="{{item.id}}" bindtap="getLotteryResult">
+          <view wx:if="{{my.split(item.id) == 'bvid' || my.split(item.id) == 'aid'}}">
+            <!--视频-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__desc">{{item.desc}}</view>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">{{item.coinCount}}🪙</view>
+                  <view class="weui-media-box__info__meta">{{item.viewCount}} 播放</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <!-- <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view> -->
+                </view>
+              </view>
+            </a>
+          </view>
+
+          <view wx:if="{{my.split(item.id) == 'cv'}}">
+            <!--文章（专栏）-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">{{item.coinCount}}🪙</view>
+                  <view class="weui-media-box__info__meta">{{item.viewCount}} 阅读</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <!-- <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view> -->
+                </view>
+              </view>
+            </a>
+          </view>
+
+          <view wx:if="{{my.split(item.id) == 'did'}}">
+            <!--动态-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="https://picsum.photos/200" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view>
+                </view>
+              </view>
+            </a>
+          </view>
+        </view>
+      </block>
+    </view>
+    <!-- <view class="weui-panel__ft">
+      <a class="weui-cell weui-cell_active weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">查看更多</view>
+        <text class="weui-cell__ft"></text>
+      </a>
+    </view> -->
+
+
+    <view class="weui-panel__hd">已开奖</view>
+    <view class="weui-panel__bd">
+      <block wx:for="{{lotteryHaveBeenDrawn}}" wx:key="*this">
+        <view id="{{item.id}}" bindtap="getLotteryResult">
+          <view wx:if="{{my.split(item.id) == 'bvid' || my.split(item.id) == 'aid'}}">
+            <!--视频-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__desc">{{item.desc}}</view>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">{{item.coinCount}}🪙</view>
+                  <view class="weui-media-box__info__meta">{{item.viewCount}} 播放</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <!-- <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view> -->
+                </view>
+              </view>
+            </a>
+          </view>
+
+          <view wx:if="{{my.split(item.id) == 'cv'}}">
+            <!--文章（专栏）-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">{{item.coinCount}}🪙</view>
+                  <view class="weui-media-box__info__meta">{{item.viewCount}} 阅读</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <!-- <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view> -->
+                </view>
+              </view>
+            </a>
+          </view>
+
+          <view wx:if="{{my.split(item.id) == 'did'}}">
+            <!--动态-->
+            <a class="weui-media-box weui-media-box_appmsg">
+              <view class="weui-media-box__hd">
+                <image class="weui-media-box__thumb" src="https://picsum.photos/200" alt></image>
+              </view>
+              <view class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
+                <view class="weui-media-box__info">
+                  <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                  <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
+                  <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view>
+                </view>
+              </view>
+            </a>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- toast显示失败原因 -->
+  <view aria-role="alert" class="fadeIn {{hideWarnToast ? 'fadeOut' : ''}}" wx:if="{{warnToast}}">
+		<view class="weui-mask_transparent"></view>
+		<view class="weui-toast">
+			<i class="weui-icon-warn weui-icon_toast"></i>
+			<view class="weui-toast__content">{{warnMsg}}</view>
+		</view>
+	</view>
+</view>
+

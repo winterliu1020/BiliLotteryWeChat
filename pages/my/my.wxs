@@ -1,0 +1,42 @@
+// my.wxs
+var split = function (tag) {
+  if(tag){
+    var a = tag.split("|")[0];//我这里请求到的数据是以'.'分隔的，需要根据业务需求改成你自己的分隔符
+    return a;
+  }else{
+    return
+  }
+};
+
+var showSomeCharacter = function (str) {
+  if(str){
+    if (str.length > 25) {
+      var a = str.substring(0, 15);
+      return a + "...";
+    } else {
+      return a;
+    }
+  }else{
+    return
+  }
+};
+
+var timeStampToTime = function (timeStamp) {
+  // 比如需要这样的格式 yyyy-MM-dd hh:mm:ss
+  var date = getDate(timeStamp);
+  Y = date.getFullYear() + '-';
+  M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+  D = date.getDate() + ' ';
+  h = date.getHours() + ':';
+  m = date.getMinutes() + ':';
+  s = date.getSeconds(); 
+  console.log(Y+M+D+h+m+s);
+  return Y+M+D+h+m+s;
+  // 输出结果：2014-04-23 18:55:49
+}
+
+module.exports = {
+  split: split,
+  timeStampToTime: timeStampToTime,
+  showSomeCharacter: showSomeCharacter
+}
