@@ -4,13 +4,14 @@
     "pages/lotteryResult/lotteryResult",
     "pages/my/my",
     "pages/logs/logs",
-    "pages/index/index",
-    "pages/executeLottery/executeLottery"
+    "pages/executeLottery/executeLottery",
+    "pages/introduction/introduction",
+    "pages/codeRepo/codeRepo"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "BiliLottery",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {

@@ -140,6 +140,7 @@ Page({
   },
 
   myLogin: function(userInfo) {
+    var config = (wx.getStorageSync('config'))
     var that = this;
     wx.login({
       success: function(res) {
@@ -159,7 +160,7 @@ Page({
           }
 
           wx.request({
-            url: 'http://localhost:8080/login',
+            url: config.login,
             method: "POST",
             data: sendData,
             
@@ -274,6 +275,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var config = (wx.getStorageSync('config'))
     console.log("my页面：成功进入" + JSON.stringify(options));
     var that = this;
     
@@ -317,7 +319,7 @@ Page({
         })
         // 通过session向后端请求页面数据
         wx.request({
-          url: 'http://localhost:8080/api/getAllLottery',
+          url: config.getAllLottery_url,
           method: "POST",
           data: {
             session: res.data,
@@ -397,6 +399,7 @@ Page({
   onShow: function () {
     // 只要显示这个页面，如果有本地存储中有session，那个登录按钮隐藏，否则显示登录按钮
     console.log("my页面onShow函数执行");
+    // this.onPullDownRefresh()
     var that = this;
     // 一进入到my页面判断本地是否有key，没有就显示初始页面，有就拿着session向服务器端发请求
     wx.getStorage({
@@ -410,7 +413,7 @@ Page({
       fail (res) {
         console.log("本地session不存在");
         that.setData({
-          warnMsg: "获取本地session失败，请重新登录"
+          warnMsg: "获取本地session失败，请登录"
         })
         that.openWarnToast();
       }
@@ -467,6 +470,13 @@ Page({
   onPullDownRefresh: function () {
     // 用户下拉，需要重新请求当前页面数据
     // 判断本地是否有session，没有就显示初始页面，有就拿着session向服务器端发请求
+    console.log("下拉动作...")
+    wx.showNavigationBarLoading({
+      success: (res) => {
+        console.log("展示下拉动画..")
+      },
+    })
+    var config = (wx.getStorageSync('config'))
     var that = this;
     wx.getStorage({
       key: 'session',
@@ -474,7 +484,7 @@ Page({
         console.log("下拉获取到本地session是：" + res.data);
         // 通过session向后端请求页面数据
         wx.request({
-          url: 'http://localhost:8080/api/getAllLottery',
+          url: config.getAllLottery_url,
           method: "POST",
           data: {
             session: res.data,
@@ -491,6 +501,12 @@ Page({
                 lotteryHaveBeenDrawn: res.data.data.lotteryHaveBeenDrawn,
                 lotteryNotDrawYet: res.data.data.lotteryNotDrawYet
               })
+              wx.hideNavigationBarLoading({
+                success: (res) => {
+                  console.log("隐藏下拉动画...")
+                },
+              })
+              wx.stopPullDownRefresh()
             }
           }
         });

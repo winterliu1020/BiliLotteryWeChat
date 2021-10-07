@@ -1,0 +1,48 @@
+<!--pages/introduction/introduction.wxml-->
+<page-meta root-font-size="system"/>
+<view class="page" data-weui-theme="{{theme}}">
+    <view class="page__hd">
+        <view class="page__title">BiliLottery 使用教程</view>
+        <image class="weui-article__img" src="../../image/logo.jpg" mode="aspectFit" style="height: 180px" />
+        <view class="page__desc">ID可以是AV号、BV号、CV号、动态ID中的任意一种URL可以是视频稿件、专栏稿件、动态的网页链接或分享链接中的任意一种</view>
+    </view>
+    <view class="page__bd">
+        <view class="weui-article">
+            <!-- <view class="weui-article__h1">大标题</view> -->
+            <view class="weui-article__section">
+                <view class="weui-article__h2">ID</view>
+                <view class="weui-article__section">
+                    <!-- <view class="weui-article__h3">1.1 节标题</view> -->
+                    <view class="weui-article__p">
+                        1. AV：av10001
+                    </view>
+                    <view class="weui-article__p">
+                        2. BV：bv1Dy4y177st
+                    </view>
+                    <view class="weui-article__p">
+                        3. CV：cv7030871
+                    </view>
+                    <view class="weui-article__p">
+                        4. 动态ID：567296490395963128
+                    </view>
+                </view>
+                <view class="weui-article__h2">URL</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__p">
+                        1. 视频稿件：https://www.bilibili.com/video/BV1134y1U7Ar
+                    </view>
+                    <view class="weui-article__p">
+                        2. 专栏稿件：https://www.bilibili.com/read/cv13202928
+                    </view>
+                    <view class="weui-article__p">
+                        3. 动态：https://t.bilibili.com/567296490395963128
+                    </view>
+                    <view class="weui-article__p">
+                        4. 移动端分享（注意去掉稿件说明）：https://b23.tv/7Qd53S
+                    </view>
+                    <image class="weui-article__img" src="../../image/mobileIntrodution.jpeg" mode="aspectFit" style="height: 400px" />
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

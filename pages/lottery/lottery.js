@@ -18,12 +18,15 @@ Page({
   },
 
   entranceLottery: function() {
+    var config = (wx.getStorageSync('config'))
     console.log("点击1");
     // 开始请求该条patternId对应的数据
     var that = this;
     // 将id传给后端查询该条视频的数据并显示
     wx.request({
-      url: 'http://localhost:8080/api/bearer',
+      url: config.bearer_url,
+      // url: "127.0.0.1:8080/api/bearer",
+      // url: "https://bililottery.liuwentao.top/api/bearer",
       method: "POST",
       header: {
         'content-type': 'application/x-www-form-urlencoded' 
@@ -69,7 +72,7 @@ Page({
         }
       },
       fail: (res) => {
-        console.log("发起api/bearer请求失败...")
+        console.log("发起api/bearer请求失败..." + JSON.stringify(res))
       }
     })
   },

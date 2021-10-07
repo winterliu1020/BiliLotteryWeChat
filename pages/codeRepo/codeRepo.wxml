@@ -1,0 +1,69 @@
+<!--pages/codeRepo/codeRepo.wxml-->
+<!--pages/introduction/introduction.wxml-->
+<page-meta root-font-size="system"/>
+<view class="page" data-weui-theme="{{theme}}">
+    <view class="page__hd">
+        <!-- <view class="page__title">BiliLottery</view> -->
+        <image class="weui-article__img" src="../../image/logo.jpg" mode="aspectFit" style="height: 180px" />
+        <view class="page__desc">B站抽奖小程序，支持多种抽奖类型，保存每次发起的抽奖，可以随时查看抽奖结果，提供一个公平且高效的抽奖方式。</view>
+    </view>
+    <view class="page__bd">
+        <view class="weui-article">
+          <view class="weui-article__h1">BiliLottery</view>
+          
+            <view class="weui-article__section">
+              <view class="weui-article__section">
+                    <view class="weui-article__p">
+                      本项目代码已放在 Github: https://github.com/winterliu1020/BiliLottery
+                    </view>
+                </view>
+              <view class="weui-article__h2">说明</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__p">
+                      本项目参考来源：https://github.com/InJeCTrL/BiliCLOnline
+                    </view>
+                    <view class="weui-article__p">
+                      感谢🙏
+                    </view>
+                </view>
+                <view class="weui-article__h2">抽奖模式</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__p">
+                      即刻抽奖：立即发布抽奖得到抽奖结果并保存
+                    </view>
+                    <view class="weui-article__p">
+                      定时抽奖：到设定的开奖时间，后台自动开奖并保存抽奖结果
+                    </view>
+                </view>
+                <view class="weui-article__h2">抽奖筛选条件</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__p">
+                      可以设置三种筛选条件进行随机抽奖
+                    </view>
+                    <view class="weui-article__p">
+                      1. 仅评论抽奖
+                    </view>
+                    <view class="weui-article__p">
+                      2. 评论 + 关注抽奖
+                    </view>
+                    <view class="weui-article__p">
+                      3. 支持者模式（评论 + 关注 + 根据关注时间长短赋予权重，按照权重随机抽奖）（已开发完成，但未上线，有需求的可以 B 站私信）
+                    </view>
+                </view>
+                <view class="weui-article__h2">本项目采用的抽奖算法</view>
+                <view class="weui-article__section">
+                  <image class="weui-article__img" src="../../image/lotteryMethod.jpg" mode="aspectFit" style="height: 240px" />
+                </view>
+                <view class="weui-article__h2">联系开发者</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__p">
+                      哔哩哔哩账号：winterliu1020
+                    </view>
+                    <view class="weui-article__p">
+                      哔哩哔哩UID：361782156
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

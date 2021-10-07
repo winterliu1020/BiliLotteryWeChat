@@ -26,10 +26,10 @@ var timeStampToTime = function (timeStamp) {
   var date = getDate(timeStamp);
   Y = date.getFullYear() + '-';
   M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-  D = date.getDate() + ' ';
-  h = date.getHours() + ':';
-  m = date.getMinutes() + ':';
-  s = date.getSeconds(); 
+  D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+  h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+  m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+  s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
   console.log(Y+M+D+h+m+s);
   return Y+M+D+h+m+s;
   // 输出结果：2014-04-23 18:55:49

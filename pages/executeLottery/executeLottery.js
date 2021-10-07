@@ -25,8 +25,10 @@ Page({
     executeLotteryMsg: "",
 
     warnMsg: "",
+    haveSession: false, // 当前页面每次show都需要检测本地是否有session
 
-    lotteryTypeArray: ['仅评论', '评论 + 关注', '支持者模式❤️'],
+    // lotteryTypeArray: ['仅评论', '评论 + 关注', '支持者模式❤️'],
+    lotteryTypeArray: ['仅评论', '评论 + 关注'],
     lotteryTypeValue: 0
   },
 
@@ -151,13 +153,7 @@ Page({
     wx.reLaunch({
       url: '../my/my',
       events: {
-        // // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-        // acceptDataFromOpenedPage: function(data) {
-        //   console.log(data)
-        // },
-        // someEvent: function(data) {
-        //   console.log(data)
-        // }
+        
       },
       fail: function(res) {
         console.log("失败到my");
@@ -174,7 +170,7 @@ Page({
   // 点击发起抽奖按钮
   executeLottery: function(data) {
     console.log("---点击发起抽奖按钮---" + JSON.stringify(data));
-
+    var config = (wx.getStorageSync('config'))
     var that = this;
 
     wx.getStorage({
@@ -183,8 +179,22 @@ Page({
         console.log("executeLottery页面获取到本地session是：" + res.data);
         // 通过session向后端请求页面数据
         // 发起抽奖
+        // 先对用户输入的各个字段做校验
+        if (!data.detail.value.lotteryCount) {
+          console.log("抽奖人数为空")
+          that.setData({
+            warnMsg: "请填写中奖总数"
+          })
+          that.openWarnToast();
+          return;
+        }
+        
+        console.log("用户输入合法，执行抽奖请求")
+        wx.showLoading({
+          title: '正在抽奖，请稍后...',
+        });
         wx.request({
-          url: 'http://localhost:8080/api/Lottery/' + that.data.pageData.bearer.id,
+          url: config.Lottery_url + that.data.pageData.bearer.id,
           method: "POST",
           header: {
             'content-type': 'application/x-www-form-urlencoded' 
@@ -210,6 +220,8 @@ Page({
           // https://www.bilibili.com/video/BV1Dy4y177st
           // content-type: 
           success: function(lotteryRes) {
+            wx.hideLoading(); // 服务器返回了数据
+
             console.log("抽奖结果 lotteryRes:" + JSON.stringify(lotteryRes));
             // console.log('成功' + res.data.data.bearer.pubTime);
             console.log("准备进入抽奖结果页面...");
@@ -298,7 +310,13 @@ Page({
             }
           },
           fail: function(res) {
-            console.log("发起抽奖失败...")
+            wx.hideLoading(); // 服务器返回了失败数据
+            console.log("发起抽奖失败，虽然没有在微信限制的1分钟以内请求到数据，但是抽奖结果会保存在后台，所以提示用户稍后在「我的」中查看抽奖结果" + JSON.stringify(res))
+            wx.hideLoading();
+            that.setData({
+              warnMsg: "评论数过大后台仍在抽奖，请稍后在「我的」中查看抽奖结果"
+            })
+            that.openWarnToast();
           }
         });
       },
@@ -332,7 +350,24 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    var that = this;
+    wx.getStorage({
+      key: 'session',
+      success (res) {
+        // 可以拿到session
+        console.log("executeLottery页面show函数成功拿到session" + JSON.stringify(res))
+        that.setData({
+          haveSession: true
+        })
+      },
+      fail: function(res) {
+        console.log("executeLottery页面show函数获取session失败" + JSON.stringify(res))
+        that.setData({
+          haveSession: false
+        })
+      }
+    })
+    
   },
 
   /**

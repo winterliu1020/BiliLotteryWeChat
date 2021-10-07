@@ -1,12 +1,15 @@
 <!--pages/executeLottery/executeLottery.wxml-->
 <view class="page" data-weui-theme="{{theme}}">
   <view class="page__hd">
-    <!-- <view class="weui"> -->
     <view wx:if="{{pageData.type.code == 0}}">
         <image src="{{pageData.bearer.pic}}"></image>
+        <view>{{pageData.bearer.desc}}</view>
+    </view> 
+    <view wx:else>
+        <image class="weui-article__img" src="../../image/logo.jpg" mode="aspectFit" style="height: 180px" />
     </view>
-    <view wx:if="{{pageData.type.code == 0}}">{{pageData.bearer.desc}}</view>
   </view>
+  
   <view class="page__bd">
     <view class="weui-cells__title">目标信息</view>
     <view class="weui-cells weui-cells_after-title">
@@ -72,10 +75,10 @@
       <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_active">
             <view class="weui-cell__hd">
-                <view class="weui-label">设定中奖数</view>
+                <view class="weui-label">中奖总数</view>
             </view>
             <view class="weui-cell__bd">
-                <input name="lotteryCount" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="不超过50"/>
+                <input name="lotteryCount" type="number" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="不超过50"/>
             </view>
         </view>
         <view class="weui-cell weui-cell_active">
@@ -83,9 +86,29 @@
                 <view class="weui-label">奖品备注</view>
             </view>
             <view class="weui-cell__bd">
-                <input name="prizeNotes" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="填写奖品..."/>
+                <!-- <input name="prizeNotes" class="weui-input" placeholder-class="weui-input__placeholder"  placeholder="填写奖品..."/> -->
+                <view class="weui-cell__bd">
+                    <textarea name="prizeNotes" class="weui-textarea" placeholder="请按例子填写备注，一行代表一类奖品（奖品名称，数字）：\nBiliBili大会员，10\nB站小电视，5\n..." placeholder-class="weui-input__placeholder" rows="2"></textarea>
+                    <view aria-role="option" class="weui-textarea-counter">请尽量在10行以内</view>
+                </view>
             </view>
         </view>
+        <!-- <view class="weui-form">
+            <view class="weui-form__control-area">
+                <view class="weui-cells__group weui-cells__group_form">
+                    <view class="weui-cells__title">奖品备注</view>
+                    <view class="weui-cells weui-cells_form">
+                        <view class="weui-cell">
+                            <view class="weui-cell__bd">
+                                <textarea class="weui-textarea" placeholder="请按例子填写备注（左边是奖品名称，右边数字对应该奖品数量，用逗号间隔）：" placeholder-class="weui-input__placeholder" rows="3"></textarea>
+                                <view aria-role="option" class="weui-textarea-counter"><span>0</span>/200</view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view> -->
+
         <!-- 先故意隐藏，默认情况下不允许 -->
         <view wx:if="{{1 > 2}}" class="weui-cell weui-cell_switch">
             <view class="weui-cell__bd">允许重复UID</view>
@@ -252,7 +275,9 @@
     
       <view class="weui-cells__tips">* 评论区中的楼中楼不会参与抽奖</view>
       <view class="weui-cells__tips">* 重复评论无效，系统会自动删除重复评论</view>
-      <view class="weui-cells__tips">* 支持者模式❤️：需评论+关注，且关注时间越久，中奖概率越大</view>
+      <view class="weui-cells__tips">* 评论+关注抽奖所用时间随作品下评论用户的关注情况而变化，若等待时间过长，可稍后在「我的」中查看抽奖结果</view>
+      <view class="weui-cells__tips">* 奖品备注左边是奖品名称，右边数字对应该奖品数量，用中文逗号间隔，每一行代表一类奖品</view>
+      <!-- <view class="weui-cells__tips">* 支持者模式❤️：需评论+关注，且关注时间越久，中奖概率越大</view> -->
       <view class="weui-cell__bd">
         <button formType="submit" class="weui-btn weui-btn_primary" style="margin-top: 40%;">发起抽奖</button>
       </view>
@@ -292,6 +317,17 @@
         <view class="weui-toast__content">{{warnMsg}}</view>
     </view>
   </view>
+
+ <!-- toast提示用户发起抽奖前先登录 -->
+ <!-- toast显示失败原因 -->
+ <view aria-role="alert" class="fadeIn {{hideWarnToast ? 'fadeOut' : ''}}" wx:if="{{!haveSession}}">
+    <view class="weui-mask_transparent"></view>
+    <view class="weui-toast">
+    <i class="weui-icon-warn weui-icon_toast"></i>
+    <view class="weui-toast__content">发起抽奖前请先到「我的」中登录</view>
+    </view>
+</view>
+
 </view>
 
 

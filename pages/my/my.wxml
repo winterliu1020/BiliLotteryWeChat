@@ -9,7 +9,7 @@
         <block wx:if="{{!haveUserInfo}}">
           <!-- <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称1 </button> -->
           <!-- <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button> -->
-          <button wx:if="{{!haveUserInfo}}" class="weui-btn weui-btn_primary" bindtap="syncUserInfo">同步账号昵称数据</button>
+          <button wx:if="{{!haveUserInfo}}" class="weui-btn weui-btn_primary" bindtap="syncUserInfo">同步账号昵称</button>
         </block>
         <block wx:else>
           <view class='headView'>
@@ -59,7 +59,7 @@
             <!--文章（专栏）-->
             <a class="weui-media-box weui-media-box_appmsg">
               <view class="weui-media-box__hd">
-                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+                <image class="weui-media-box__thumb" src="../../image/articleLottery.jpg" alt></image>
               </view>
               <view class="weui-media-box__bd">
                 <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
@@ -78,14 +78,14 @@
             <!--动态-->
             <a class="weui-media-box weui-media-box_appmsg">
               <view class="weui-media-box__hd">
-                <image class="weui-media-box__thumb" src="https://picsum.photos/200" alt></image>
+                <image class="weui-media-box__thumb" src="../../image/dynamicLottery.jpg" alt></image>
               </view>
               <view class="weui-media-box__bd">
                 <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
                 <view class="weui-media-box__info">
                   <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
                   <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
-                  <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view>
+                  <view class="weui-media-box__info__meta">{{my.timeStampToTime(item.pubTime)}}</view>
                 </view>
               </view>
             </a>
@@ -129,7 +129,7 @@
             <!--文章（专栏）-->
             <a class="weui-media-box weui-media-box_appmsg">
               <view class="weui-media-box__hd">
-                <image class="weui-media-box__thumb" src="{{item.pic}}" alt></image>
+                <image class="weui-media-box__thumb" src="../../image/articleLottery.jpg" alt></image>
               </view>
               <view class="weui-media-box__bd">
                 <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
@@ -148,14 +148,14 @@
             <!--动态-->
             <a class="weui-media-box weui-media-box_appmsg">
               <view class="weui-media-box__hd">
-                <image class="weui-media-box__thumb" src="https://picsum.photos/200" alt></image>
+                <image class="weui-media-box__thumb" src="../../image/dynamicLottery.jpg" alt></image>
               </view>
               <view class="weui-media-box__bd">
                 <h4 class="weui-media-box__title">{{my.showSomeCharacter(item.title)}}</h4>
                 <view class="weui-media-box__info">
                   <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
                   <view class="weui-media-box__info__meta">评论数：{{item.commentCount}}</view>
-                  <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{my.timeStampToTime(item.pubTime)}}</view>
+                  <view class="weui-media-box__info__meta">{{my.timeStampToTime(item.pubTime)}}</view>
                 </view>
               </view>
             </a>

@@ -13,7 +13,7 @@
     </view>
     <view wx:else>
     <!-- 非定时抽奖显示一张图片 -->
-      <image src="https://picsum.photos/200"></image>
+      <image src="../../image/logo.jpg"></image>
     </view>
     <!-- 发起该次抽奖到设置信息 -->
   </view>
@@ -21,8 +21,9 @@
     <view class="weui-form-preview">
 			<view class="weui-form-preview__hd" aria-role="option">
 				<view class="weui-form-preview__item">
-					<label class="weui-form-preview__label">奖品</label>
-					<em class="weui-form-preview__value" wx:if="{{!!pageData.postLottery.prizeNotes}}">{{pageData.postLottery.prizeNotes}}</em>
+					<label class="weui-form-preview__label">奖品数量</label>
+          <!-- <em class="weui-form-preview__value" wx:if="{{!!pageData.postLottery.prizeNotes}}">{{pageData.postLottery.prizeNotes}}</em> -->
+          <em class="weui-form-preview__value" wx:if="{{!!prizeCount}}">共 {{prizeCount}} 份</em>
 				</view>
 			</view>
 			<view aria-labelledby="p1 js_a11y_comma p2 js_a11y_comma p3" class="weui-form-preview__bd" aria-role="option">
@@ -75,31 +76,35 @@
           </view>
 				</view>
 			</view>
-		</view>
-    <view class="weui-panel__hd">中奖名单</view>
-    <view class="weui-panel__bd">
-      <view wx:if="{{pageData.lotteryResult.length == 0}}">
-        <view class="weui-loadmore weui-loadmore_line">
-          <text class="weui-loadmore__tips">{{msg}}</text>
-        </view>
-      </view>
-      <block wx:for="{{pageData.lotteryResult}}" wx:key="*this">
-        <a class="weui-media-box weui-media-box_appmsg">
-          <view class="weui-media-box__hd">
-            <image class="weui-media-box__thumb" src="{{item.faceUrl}}" alt></image>
-          </view>
-          <view class="weui-media-box__bd">
-            <h4 class="weui-media-box__title">{{item.uname}}</h4>
-            <view class="weui-media-box__desc">{{item.content}}</view>
-            <view class="weui-media-box__info">
-              <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
-              <view class="weui-media-box__info__meta">{{item.pubTime}}</view>
-              <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">uid: {{item.uid}}</view>
-            </view>
-          </view>
-        </a>
-      </block>
     </view>
+    <block wx:for="{{pageData.lotteryResultAndPrizeNameList}}" wx:for-item="onePrize" wx:key="*this">
+      <view class="weui-panel__hd">{{onePrize.prizeName}} X {{onePrize.lotteryResult.length}} 份</view>
+      <view class="weui-panel__bd">
+        <!-- <view wx:if="{{pageData.lotteryResult.length == 0}}">
+          <view class="weui-loadmore weui-loadmore_line">
+            <text class="weui-loadmore__tips">{{msg}}</text>
+          </view>
+        </view> -->
+        <block wx:for="{{onePrize.lotteryResult}}" wx:key="unique">
+          <a class="weui-media-box weui-media-box_appmsg">
+            <view class="weui-media-box__hd">
+              <image class="weui-media-box__thumb" src="{{item.faceUrl}}" alt></image>
+            </view>
+            <view class="weui-media-box__bd">
+              <h4 class="weui-media-box__title">{{item.uname}}</h4>
+              <view class="weui-media-box__desc">{{item.content}}</view>
+              <view class="weui-media-box__info">
+                <view class="weui-media-box__info__meta">{{item.likeCount}}👍</view>
+                <view class="weui-media-box__info__meta">{{item.pubTime}}</view>
+                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">uid: {{item.uid}}</view>
+              </view>
+            </view>
+          </a>
+        </block>
+      </view>
+    </block>
+
+    
     <!-- <view class="weui-panel__ft" wx:if="{{pageData.postLottery.count  > 100}}">
       <a class="weui-cell weui-cell_active weui-cell_access weui-cell_link">
         <view class="weui-cell__bd">查看更多 {{pageData.postLottery.count}}</view>

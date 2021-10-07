@@ -1,12 +1,13 @@
 <!--pages/lottery/lottery.wxml-->
 <view class="page" data-weui-theme="{{theme}}">
   <view class="page__hd">
-      <view class="page__title">说明</view>
-      <view class="page__desc">ID可以是AV号、BV号、CV号、动态ID中的任意一种
-URL可以是视频稿件、专栏稿件、动态的网页链接或分享链接中的任意一种</view>
+    <image class="weui-article__img" src="../../image/logo.jpg" mode="aspectFit" style="height: 180px" />
+    <!-- <view class="page__title">B站评论抽奖说明</view>
+    <view class="page__desc">ID可以是AV号、BV号、CV号、动态ID中的任意一种
+URL可以是视频稿件、专栏稿件、动态的网页链接或分享链接中的任意一种</view> -->
   </view>
   <view class="page__bd">
-    <view class="weui-cells__title">设置目标稿件/动态</view>
+    <view class="weui-cells__title">输入目标稿件/动态</view>
     <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_active">
             <view class="weui-cell__bd">
@@ -17,6 +18,14 @@ URL可以是视频稿件、专栏稿件、动态的网页链接或分享链接�
     <view class="weui-cell__bd">
       <a class="weui-btn weui-btn_primary" style="margin-top: 40%;" bindtap="entranceLottery">进入抽奖</a>
     </view>
+    <view class="weui-footer weui-footer_fixed-bottom">
+			<view class="weui-footer__links">
+				<navigator class="weui-footer__link weui-wa-hotarea" url="../introduction/introduction">使用说明</navigator>
+				<navigator class="weui-footer__link weui-wa-hotarea" url="../codeRepo/codeRepo">代码仓库</navigator>
+			</view>
+			<view class="weui-footer__text">Copyright &copy; 2021 BiliLottery</view>
+		</view>
+
   </view>
 
   <!-- 弹框 -->

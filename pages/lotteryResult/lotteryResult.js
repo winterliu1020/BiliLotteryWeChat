@@ -33,8 +33,12 @@ Page({
       waitTimes:0, //超时变量
       timeList:[], //定时器列表
 
-      id: "" // 当前抽奖结果对应的id号
+      id: "", // 当前抽奖结果对应的id号
+
+      prizeCount: 0, // 总的抽奖人数
       
+      // 页面倒计时，存储setInterval返回的timer对象
+      timer: Object
 
   },
   close: function () {
@@ -152,6 +156,7 @@ Page({
   onLoad: function (options) {
     var that = this;
     console.log("这个页面展示的中奖结果对应是：" + options.id);
+    var config = (wx.getStorageSync('config'))
     that.setData({
       id: options.id
     })
@@ -161,7 +166,7 @@ Page({
           console.log("lotteryResult获取到本地session是：" + res.data);
           // 通过session向后端请求页面数据
           wx.request({
-            url: 'http://localhost:8080/api/getLotteryResult',
+            url: config.getLotteryResult_url,
             method: "POST",
             data: {
               session: res.data,
@@ -177,15 +182,12 @@ Page({
                 console.log(JSON.stringify(res))
                 that.setData({
                   pageData: res.data.data,
+                  prizeCount: res.data.count,
                   msg: res.data.msg
                 })
                 // 执行倒计时
                 var nowTimeMilliSecond = new Date().getTime();
                 if (nowTimeMilliSecond < res.data.data.postLottery.lotteryDateAndTime) {
-                  // let gapTimeSecond = (endTimeMilliSecond - nowTimeMilliSecond) / 1000;
-                  // for (i = 1; i <= gapTimeSecond; i++) {
-                  // setTimeout("handleCountdown()", i * 1000, res.data.data.postLottery.lotteryDateAndTime);
-                  // }
                   that.countDown(res.data.data.postLottery.lotteryDateAndTime);
                   console.log("开始倒计时..." + res.data.data.postLottery.lotteryDateAndTime)
                   
@@ -285,7 +287,8 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    // 页面卸载，需要把timer倒计时对象删掉
+    clearInterval(this.data.timer)
   },
 
   /**
@@ -336,6 +339,7 @@ Page({
   },
 
   countDown: function(endTimeMilliSecond) { // 传毫秒数
+    
     console.log("传来的毫秒数：" + endTimeMilliSecond)
     var endTimeSeconds = endTimeMilliSecond / 1000; // 倒计时总秒数
     
@@ -361,16 +365,26 @@ Page({
         this.startWaiting()
       } 
     }, 1000)
+
+    // 将timer赋值给data，当页面unload时，需要将这个timer删掉
+    this.setData({
+      timer: timer
+    })
   },
 
   myUpdate() {
+      var config = (wx.getStorageSync('config'))
       var that = this;
-      var maxWait = 15 //超时次数
+      var maxWait = 100 //超时次数
       var newWait = this.data.waitTimes + 1 //执行的次数
       if (newWait >= maxWait) { //超时了
           console.log(util.formatTime(new Date()), '向后端轮询达到最大次数')
+          that.setData({
+            warnMsg: "后台服务器仍在为您抽奖，请稍后在「我的」中查看抽奖结果"
+          })
+          that.openWarnToast();
       } else { //未超时
-          var time = setTimeout(this.myUpdate, 100)
+          var time = setTimeout(this.myUpdate, 500)
           this.data.timeList.push(time) // 存储定时器
           console.log(util.formatTime(new Date()), '第', newWait, '次轮询中...')
           // 向后端发请求，看是否拿到数据
@@ -380,7 +394,7 @@ Page({
               console.log("lotteryResult获取到本地session是：" + res.data);
               // 通过session向后端请求页面数据
               wx.request({
-                url: 'http://localhost:8080/api/getLotteryResult',
+                url: config.getLotteryResult_url,
                 method: "POST",
                 data: {
                   session: res.data,
@@ -391,12 +405,13 @@ Page({
                 },
                 
                 success: function(res) {
-                  if (res.data.code == 0 && res.data.data.lotteryResult.length > 0) {
+                  if (res.data.code == 0 && res.data.data.lotteryResultAndPrizeNameList.length > 0) {
                     // 说明拿到了抽奖结果
                     console.log('轮询获取lotteryResult页面数据成功，开始初始化lotteryResult界面数据，页面数据如下：');
                     console.log(JSON.stringify(res))
                     that.setData({
                       pageData: res.data.data,
+                      prizeCount: res.data.count,
                       msg: res.data.msg
                     })
                     console.log(util.formatTime(new Date()), '拿到了所需数据！轮询停止')
@@ -436,12 +451,27 @@ Page({
                         console.log("移除本地session失败")
                       }
                     })
+                  } else if (res.data.code == 1) {
+                    // 后端返回错误，结束轮询
+                    console.log(util.formatTime(new Date()), ' 后端返回错误！轮询停止')
+                    that.stopWaiting()
+                    that.setData({
+                      warnMsg: res.data.msg
+                    })
+                    that.openWarnToast();
                   } else { // 后端没有返回数据，或者查到的抽奖人数为0，继续轮询
                     console.log("获取lotteryResult结果失败，继续轮询" + JSON.stringify(res))
                     that.setData({
                         waitTimes: newWait
                     })
                   }
+                },
+                fail: function(res) {
+                  console.log("轮询达到微信网络请求时间上限，请求超时，请稍后在「我的」中查看抽奖结果");
+                  that.setData({
+                    warnMsg: "请求超时，请稍后在「我的」中查看抽奖结果"
+                  })
+                  that.openWarnToast();
                 }
               });
             },
@@ -459,81 +489,15 @@ Page({
       }
   },
   startWaiting() {
-      setTimeout(this.myUpdate, 100) // 100毫秒执行一次，超时次数设定为15次
+    wx.showLoading({
+      title: '正在抽奖，请稍后...',
+    });
+      setTimeout(this.myUpdate, 500) // 500毫秒执行一次，超时次数设定为100次
   },
   stopWaiting() {
-      for (var i = 0; i < this.data.timeList.length; i++) {
-          clearTimeout(this.data.timeList[i]); //清除了所有定时器
-      }
-  },
-
-
-  // 执行倒计时
-  // 到计时时钟
-  handleCountdown: function(endTimeMilliSecond) {
-    // 获取当前时间，同时得到活动结束时间数组
-    var nowTimeMilliSecond = new Date().getTime();
-    
-    var obj = {
-      day: '00',
-      hour: '00',
-      minute: '00',
-      second: '00'
-    };
-
-    // 如果活动未结束，对时间进行处理
-    if(endTimeMilliSecond - nowTimeMilliSecond > 0) {
-      console.log("")
-      let gapTimeSecond = (endTimeMilliSecond - nowTimeMilliSecond) / 1000;
-      // 获取天、时、分、秒
-      let day = parseInt(gapTimeSecond / (60 * 60 * 24));
-      let hou = parseInt(gapTimeSecond % (60 * 60 * 24) / 3600);
-      let min = parseInt(gapTimeSecond % (60 * 60 * 24) % 3600 / 60);
-      let sec = parseInt(gapTimeSecond % (60 * 60 * 24) % 3600 % 60);
-      obj = {
-        day: this.timeFormat(day),
-        hour: this.timeFormat(hou),
-        minute: this.timeFormat(min),
-        second: this.timeFormat(sec)
-      }
-      // 渲染，然后每隔一秒执行一次倒计时函数
-      this.setData({
-        time: obj
-      })
-      // setTimeout(this.handleCountdown, 1000);
-      console.log("继续倒计时，当前时间毫秒：..." + nowTimeMilliSecond)
-    } else {//活动已结束，全部设置为'00'
-      obj = {
-        day: '00',
-        hour: '00',
-        minute: '00',
-        second: '00'
-      }
-      console.log("倒计时结束，用redirectTo跳到本页面，实现刷新效果：")
-      // 关闭当前页面，执行redirectTo函数刷新这个页面
-      wx.redirectTo({
-        url: '../lotteryResult/lotteryResult?id=' + this.data.pageData.postLottery.id,
-        events: {
-          // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-          acceptDataFromOpenedPage: function(data) {
-            console.log(data)
-          },
-          someEvent: function(data) {
-            console.log(data)
-          }
-        },
-        success: function(res) {
-          // 通过eventChannel向被打开页面传送数据
-          // res.eventChannel.emit('acceptDataFromOpenerPage', { data: lotteryRes.data.data})
-          console.log("lotteryResult页面刷新获取新的数据成功...")
-        },
-        fail: function(res) {
-          console.log("lotteryResult页面刷新获取新的数据失败...")
-        } 
-      })
+    wx.hideLoading();
+    for (var i = 0; i < this.data.timeList.length; i++) {
+        clearTimeout(this.data.timeList[i]); //清除了所有定时器
     }
-  },
-  timeFormat: function(param) {//小于10的格式化函数
-    return param < 10 ? '0' + param : param;
   },
 })
